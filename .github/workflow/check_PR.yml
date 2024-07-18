@@ -1,0 +1,44 @@
+name: Check PR
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened       # создание новогоа pull request
+      - reopened     # повторное открытие ранее закрытого pull request
+      - synchronize  # изменение pull request
+      - closed       # закрытие pull request (как слияние, так и без слияния)
+
+jobs:
+  lint_and_test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      uses: ././github/workflow/helpers/lint_and_test.yml
+      with:
+        node-version: ['18.x', '20.x']
+
+    - name: Задать статус pull request
+      if: ${{ failure() }}
+      uses: actions/github-script@v4
+      with:
+        script: |
+          github.rest.repos.createCommitStatus({
+            state: 'failure',
+            description: 'Lint and tests failed',
+            context: 'Check PR'
+          })
+
+  merge:
+    runs-on: ubuntu-latest
+    needs: lint_and_test
+    if: ${{ needs.lint_and_test.result == 'success' }}
+
+    steps:
+    - name: Мердж изменений
+      run: echo "Проверки для pull request прошли успешно, вы можете замержить"
