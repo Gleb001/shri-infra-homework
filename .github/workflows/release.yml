@@ -61,6 +61,14 @@ jobs:
       id: commits
       run: echo "commits=$(git log ${{ steps.get_latest_tag.outputs.tag }}..HEAD --oneline)" >> $GITHUB_ENV
 
+    - name: Устанавливаем Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: Подкачиваем npm-зависимости
+      run: npm ci
+
     - name: создание Issue, которое содержит всю важную информацию
       run: node .github/actions/create-issue.js
       env:
