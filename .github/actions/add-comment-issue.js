@@ -12,14 +12,16 @@ async function run() {
         const fix_number = process.env.fix_number;
         const id_registry = process.env.id_registry;
 
+        console.log(version);
+
         const octokit = github.getOctokit(token);
         const context = github.context;
 
         const issue = await octokit.rest.issues.listForRepo({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            state: 'open'
+            labels: [`v${version}`],
         });
+
+        console.log(issue);
 
         if (!issue) {
             throw new Error(`Issue for release version ${version} not found`);
