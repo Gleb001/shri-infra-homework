@@ -12,12 +12,12 @@ async function run() {
         const fix_number = process.env.fix_number;
         const id_registry = process.env.id_registry;
 
-        console.log(version);
-
         const octokit = github.getOctokit(token);
         const context = github.context;
 
-        const issue = await octokit.rest.issues.get({
+        console.log(octokit);
+
+        const issue = await octokit.rest.issues.listForRepo({
             // title: `Release v${version}`,
             state: 'open'
         });
