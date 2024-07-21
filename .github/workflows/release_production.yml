@@ -28,13 +28,6 @@ jobs:
             docker rm app || true 
             docker run -d --name app -p 3000:3000 cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
 
-      - name: 
-        run: |
-          mkdir -p ~/.ssh/
-          echo "${{  }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh ${{ secrets.YC_USERNAME }}@${{ secrets.PUBLIC_IP_VM }}
-          
       - name: Configure Git
         run: |
           git config user.name "${{ github.actor }}"
