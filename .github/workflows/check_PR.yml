@@ -11,10 +11,34 @@ on:
       - closed       # закрытие pull request (как слияние, так и без слияния)
 
 jobs:
+  # lint_and_test:
+  #   uses: .github/workflows/lint_and_test.yml
+  #   with:
+  #     node-version: 20
   lint_and_test:
-    uses: .github/workflows/lint_and_test.yml
-    with:
-      node-version: 20
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['18.x', '20.x']
+
+    steps:
+    - name: Запускаем проверку
+      uses: actions/checkout@v4
+
+    - name: Устанавливаем Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Подкачиваем npm-зависимости
+      run: npm ci
+
+    - name: Запускаем линтер (eslint)
+      run: npm run lint
+
+    - name: Запускаем тесты (jest)
+      run: npm run test
 
   merge:
     runs-on: ubuntu-latest
