@@ -15,7 +15,7 @@ async function run() {
         const octokit = github.getOctokit(token);
         const context = github.context;
 
-        console.log(octokit);
+        console.log(octokit.rest.issues);
 
         const issue = await octokit.rest.issues.listForRepo({
             // title: `Release v${version}`,
