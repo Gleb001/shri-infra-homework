@@ -1,0 +1,76 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    branches:
+      - main
+
+jobs:
+  lint_and_test:
+    uses: ./.github/workflows/lint_and_test.yml
+
+  release:
+    runs-on: ubuntu-latest
+    needs: lint_and_test
+    if: ${{ needs.lint_and_test.result == 'success' }}
+
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: собирает docker-образ с двумя тегами
+      id: build
+      run: |
+        FIX_NUMBER=${{ github.run_number }}
+        docker build -t cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ FIX_NUMBER }} .
+        docker tag cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ FIX_NUMBER }} cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
+
+    - name: аутентификация в Yandex Registry
+      run: echo "${{ secrets.AUTH_REGISTRY_TOKEN }}" | docker login cr.yandex --username oauth --password-stdin
+    
+    - name: загружает docker-образ в Container Registry
+      run: |
+        FIX_NUMBER=${{ github.run_number }}
+        docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ FIX_NUMBER }}
+        docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
+
+    - name: создаёт тег с номером текущего релиза + пометкой `fix` и номером фикса
+      run: |
+        FIX_NUMBER=${{ github.run_number }}
+        git tag -a "${{ inputs.version }}_fix${{ FIX_NUMBER }}" -m "Fix release for version ${{ inputs.version }}"
+        git push origin "${{ inputs.version }}_fix${{ FIX_NUMBER }}"
+
+    - name: Get the previous tag
+      id: get_previous_tag
+      run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+
+    - name: Получить список пред. коммитов
+      id: commits
+      run: |
+        PREVIOUS_TAG=${{ steps.get_previous_tag.outputs.tag }}
+        COMMITS=$(git log $PREVIOUS_TAG..HEAD --oneline)
+        echo "commits=$COMMITS" >> $GITHUB_ENV
+
+    - name: получить текущую дату
+      id: date
+      run: echo "date=$(date -u)" >> $GITHUB_ENV
+    
+    - name: Устанавливаем Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: Подкачиваем npm-зависимости
+      run: npm ci
+
+    - name: добавляет комментарий в Issue
+      run: node .github/actions/add-comment-issue.js
+      with:
+        token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+        date: ${{ env.date }}
+        author: ${{ github.actor }}
+        version: ${{ inputs.version }}
+        commits: ${{ env.commits }}
+        fix_number: ${{ github.run_number }}
+        id_registry: ${{ secrets.ID_REGISTRY }}
