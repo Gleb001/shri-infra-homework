@@ -54,12 +54,11 @@ jobs:
       with:
         github-token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
         script: |
-          const { runNumber, actor } = context;
-          const [owner, repo] = context.repo;
+          const { runNumber, actor, repo } = context;
 
           await github.issues.create({
-            owner: owner,
-            repo: repo,
+            owner: repo.owner,
+            repo: repo.repo,
             title: `Release v${runNumber}`,
             body: `
               ### Release Information
