@@ -15,7 +15,6 @@ async function run() {
         const octokit = github.getOctokit(token);
         const context = github.context;
 
-        // Поиск Issue по метке и заголовку
         const { data: issues } = await octokit.request(
             'GET /repos/{owner}/{repo}/issues',
             {

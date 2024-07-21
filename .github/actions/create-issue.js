@@ -19,18 +19,18 @@ async function run() {
             labels: [`release v${version}`],
             title: `Release v${version}`,
             body: (`
-            # Release ${version}
-
-            **Дата:** ${date}
-            **Автор релиза:** ${author}
-            **Номер версии:** ${version}
-
-            **Список коммитов от предыдущего релизного тега:**
-            ${commits}
-
-            **Ссылка на docker-образ:**
-            cr.yandex/${id_registry}/app:${version}
-        `),
+                # Release ${version}
+                
+                **Дата:** ${date}
+                **Автор релиза:** ${author}
+                **Номер версии:** ${version}
+                
+                **Список коммитов от предыдущего релизного тега:**
+                ${commits}
+                
+                **Ссылка на docker-образ:**
+                cr.yandex/${id_registry}/app:${version}
+            `),
         });
 
     } catch (error) {

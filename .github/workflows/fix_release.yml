@@ -78,5 +78,5 @@ jobs:
         author: ${{ github.actor }}
         version: ${{ inputs.version }}
         commits: ${{ env.commits }}
-        github.run_number: ${{ github.run_number }}
+        fix_number: ${{ github.run_number }}
         id_registry: ${{ secrets.ID_REGISTRY }}
