@@ -60,7 +60,7 @@ jobs:
 
     - name: добавляет комментарий в Issue
       run: node .github/actions/add-comment-issue.js
-      with:
+      env:
         token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
         date: ${{ env.date }}
         author: ${{ github.actor }}
