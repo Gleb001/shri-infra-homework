@@ -1,0 +1,55 @@
+name: Deploy Release to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+
+jobs:
+  deploy-to-prod:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify Docker image exists
+        run: |
+          if ! docker manifest inspect cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest > /dev/null; then
+            echo "Docker image cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest does not exist."
+            exit 1
+          fi
+
+      - name: Deploy Docker image on VM
+        run: |
+          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ${{ secrets.YC_USERNAME }}@${{ secrets.PUBLIC_IP_VM }} << 'EOF'
+          docker pull cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
+          docker run -d --name app -p 3000:3000 cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
+          EOF
+
+      - name: Configure Git
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "default@gmail.com"
+
+      - name: получить текущую дату
+        id: date
+        run: echo "date=$(date -u)" >> $GITHUB_ENV
+
+      - name: Устанавливаем Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Подкачиваем npm-зависимости
+        run: npm ci
+
+      - name: Add comment to issue
+        run: node .github/actions/prod-release-comment.js
+        env:
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+          date: ${{ env.date }}
+          author: ${{ github.actor }}
+          version: ${{ github.run_number }}
