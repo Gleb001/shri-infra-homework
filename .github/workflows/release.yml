@@ -70,4 +70,6 @@ jobs:
         COMMITS: ${{ env.commits }}
         ID_REGISTRY: ${{ secrets.ID_REGISTRY }}
       with:
+        token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+        title: "Release v${{ github.run_number }}"
         filename: ".github/RELEASE_ISSUE_TEMPLATE.md"
