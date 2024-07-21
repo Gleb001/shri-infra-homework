@@ -31,13 +31,13 @@ jobs:
 
     - name: собирает docker-образ с двумя тегами
       run: |
-        docker build -t cr.yandex/${{ secrest.ID_REGISTRY }}/app:${{ github.run_number }} .
-        docker tag cr.yandex/${{ secrest.ID_REGISTRY }}/app:${{ github.run_number }} cr.yandex/${{ secrest.ID_REGISTRY }}/app:${{ github.run_number }}_latest
+        docker build -t cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }} .
+        docker tag cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }} cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest
 
     - name: загружает docker-образ в Container Registry 
       run: |
-        docker push cr.yandex/${{ secrest.ID_REGISTRY }}/app:${{ github.run_number }}
-        docker push cr.yandex/${{ secrest.ID_REGISTRY }}/app:${{ github.run_number }}_latest
+        docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}
+        docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest
 
     - name: создаёт тег, с номером текущей версии, который указывает на последний коммит в главной ветке
       run: |
