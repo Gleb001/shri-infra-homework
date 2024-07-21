@@ -1,0 +1,9 @@
+name: Release
+
+on: [workflow_dispatch]
+
+jobs:
+  lint_and_test:
+    uses: ././github/workflow/helpers/lint_and_test.yml
+    with:
+      node-version: ['18.x', '20.x']
