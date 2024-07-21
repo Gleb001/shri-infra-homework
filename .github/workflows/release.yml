@@ -62,16 +62,12 @@ jobs:
       run: echo "commits=$(git log ${{ steps.get_latest_tag.outputs.tag }}..HEAD --oneline)" >> $GITHUB_ENV
 
     - name: создание Issue, которое содержит всю важную информацию
-      uses: peter-evans/create-issue-from-file@v4
+      uses: JasonEtco/create-an-issue@v2
       env:
-          DATE: ${{ env.date }}
-          AUTHOR: ${{ github.actor }}
-          VERSION: ${{ github.run_number }}
-          COMMITS: ${{ env.commits }}
-          ID_REGISTRY: ${{ secrets.ID_REGISTRY }}
+        DATE: ${{ env.date }}
+        AUTHOR: ${{ github.actor }}
+        VERSION: ${{ github.run_number }}
+        COMMITS: ${{ env.commits }}
+        ID_REGISTRY: ${{ secrets.ID_REGISTRY }}
       with:
-        title: "Release ${{ github.run_number }}"
-        content-filepath: ".github/RELEASE_ISSUE_TEMPLATE.md"
-        labels: |
-          release
-          auto-generated
+        filename: ".github/RELEASE_ISSUE_TEMPLATE.md"
