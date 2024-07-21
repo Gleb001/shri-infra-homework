@@ -1,11 +1,11 @@
 # Release ${{ VERSION }}
 
-**Дата:** ${{ DATE }}
-**Автор релиза:** ${{ AUTHOR }}
-**Номер версии:** ${{ VERSION }}
+**Дата:** ${{ env.DATE }}
+**Автор релиза:** ${{ env.AUTHOR }}
+**Номер версии:** ${{ env.VERSION }}
 
 **Список коммитов от предыдущего релизного тега:**
-${{ COMMITS }}
+${{ env.COMMITS }}
 
 **Ссылка на docker-образ:**
-`cr.yandex/${{ ID_REGISTRY }}/app:${{ VERSION }}`
+`cr.yandex/${{ env.ID_REGISTRY }}/app:${{ env.VERSION }}`
