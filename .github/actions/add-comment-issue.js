@@ -18,7 +18,7 @@ async function run() {
         const context = github.context;
 
         const issue = await octokit.rest.issues.listForRepo({
-            labels: [`v${version}`],
+            labels: [version],
         });
 
         console.log(issue);

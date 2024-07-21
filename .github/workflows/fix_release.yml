@@ -7,7 +7,7 @@ on:
       version:
         description: 'Release version'
         required: true
-        default: 'v37'
+        default: '37'
 
 jobs:
   lint_and_test:
