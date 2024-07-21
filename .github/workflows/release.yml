@@ -35,10 +35,7 @@ jobs:
         docker tag cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }} cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest
 
     - name: аутентификация в Yandex Registry
-      run: docker login \
-        --username oauth \
-        --password ${{ secrets.AUTH_REGISTRY_TOKEN }} \
-        cr.yandex
+      run: cho "${{ secrets.AUTH_REGISTRY_TOKEN }}" | docker login cr.yandex --username oauth --password-stdin
 
     - name: загружает docker-образ в Container Registry 
       run: |
