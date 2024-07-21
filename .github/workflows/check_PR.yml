@@ -12,7 +12,7 @@ on:
 
 jobs:
   lint_and_test:
-    uses: ./.github/workflows/reusable/lint_and_test.yml
+    uses: ./.github/workflows/lint_and_test.yml
     with:
       node-version: '20.x'
 
