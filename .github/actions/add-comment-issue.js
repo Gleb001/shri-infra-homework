@@ -17,12 +17,17 @@ async function run() {
 
         console.log(octokit.rest.issues);
 
-        const issue = await octokit.rest.issues.listForRepo({
-            // title: `Release v${version}`,
-            state: 'open'
-        });
+        // Поиск Issue по метке и заголовку
+        const { data: issues } = await octokit.request(
+            'GET /repos/{owner}/{repo}/issues',
+            {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Release v${version}`,
+            }
+        );
 
-        console.log(issue);
+        console.log(issues);
 
         if (!issue) {
             throw new Error(`Issue for release version ${version} not found`);
