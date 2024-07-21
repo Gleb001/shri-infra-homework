@@ -16,9 +16,6 @@ jobs:
     if: ${{ needs.lint_and_test.result == 'success' }}
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
     - name: Отводит от `main` релизуню ветку `releases/<версия_релиза>`
       run: |
         git config user.name "${{ github.actor }}"
