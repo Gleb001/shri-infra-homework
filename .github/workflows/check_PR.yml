@@ -13,6 +13,10 @@ on:
 jobs:
   lint_and_test:
     uses: .github/workflows/lint_and_test.yml
+    with:
+      node-version: |
+        18.x
+        20.x
 
   merge:
     runs-on: ubuntu-latest
