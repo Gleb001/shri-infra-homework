@@ -6,7 +6,6 @@ on:
       - main
 
 jobs:
-
   lint_and_test:
     uses: ./.github/workflows/lint_and_test.yml
 
@@ -16,28 +15,33 @@ jobs:
     if: ${{ needs.lint_and_test.result == 'success' }}
 
     steps:
-    - name: Отводит от `main` релизуню ветку `releases/<версия_релиза>`
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure Git
       run: |
         git config user.name "${{ github.actor }}"
-    # git config user.email "actions@github.com"
+        git config user.email "actions@github.com"
+
+    - name: Create release branch
+      run: |
         git checkout main
         git pull origin main
         git checkout -b "releases/${{ github.run_number }}"
         git push origin "releases/${{ github.run_number }}"
 
-    # - name: Создать Docker образ
+    # Uncomment these lines if you want to build and push Docker images
+    # - name: Build Docker image
     #   run: |
     #     docker build -t cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }} .
     #     docker tag cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }} cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }}_latest
 
-    # - name: Запушить Docker образ
+    # - name: Push Docker image
     #   run: |
     #     docker push cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }}
     #     docker push cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }}_latest
 
-    # - name: Создаёт тег, с номером текущей версии, который указывает на последний коммит в главной ветке 
+    # - name: Create Git tag
     #   run: |
     #     git tag -a "v${{ github.run_number }}" -m "Release version ${{ github.run_number }}"
     #     git push origin "v${{ github.run_number }}"
-
-    
