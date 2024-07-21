@@ -12,24 +12,10 @@ on:
 
 jobs:
   lint_and_test:
-    runs-on: ubuntu-latest
-
     steps:
-      uses: ./.github/workflows/helpers/lint_and_test.yml
+      uses: ./.github/workflows/reusable/lint_and_test.yml
       with:
-        # node-version: ['18.x', '20.x']
         node-version: '20.x'
-
-    - name: Задать статус pull request
-      if: ${{ failure() }}
-      uses: actions/github-script@v4
-      with:
-        script: |
-          github.rest.repos.createCommitStatus({
-            state: 'failure',
-            description: 'Lint and tests failed',
-            context: 'Check PR'
-          })
 
   merge:
     runs-on: ubuntu-latest
