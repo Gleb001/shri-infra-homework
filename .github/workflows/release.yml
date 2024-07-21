@@ -63,7 +63,7 @@ jobs:
 
     - name: создание Issue, которое содержит всю важную информацию
       run: node .github/actions/create-issue.js
-      with:
+      env:
         token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
         date: ${{ env.date }}
         author: ${{ github.actor }}

@@ -4,12 +4,12 @@ import * as github from "@actions/github";
 async function run() {
     try {
 
-        const token = core.getInput("token");
-        const date = core.getInput("date");
-        const author = core.getInput("author");
-        const version = core.getInput("version");
-        const commits = core.getInput("commits");
-        const id_registry = core.getInput("id_registry");
+        const token = process.env.token;
+        const date = process.env.date;
+        const author = process.env.author;
+        const version = process.env.version;
+        const commits = process.env.commits;
+        const id_registry = process.env.id_registry;
 
         const octokit = new github.GitHub(token);
         const context = github.context;
