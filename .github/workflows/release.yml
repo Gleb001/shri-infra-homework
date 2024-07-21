@@ -33,7 +33,7 @@ jobs:
 
     - name: собирает docker-образ с двумя тегами
       run: |
-        docker build -t cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }} .
+        docker build -t cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest .
         docker tag cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}
 
     - name: аутентификация в Yandex Registry
