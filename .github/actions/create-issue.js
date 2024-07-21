@@ -11,7 +11,7 @@ async function run() {
         const commits = process.env.commits;
         const id_registry = process.env.id_registry;
 
-        const octokit = new github.GitHub(token);
+        const octokit = github.getOctokit(token);
         const context = github.context;
 
         // await octokit.issues.create({
