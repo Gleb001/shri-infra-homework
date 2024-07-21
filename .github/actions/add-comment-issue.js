@@ -17,9 +17,10 @@ async function run() {
         const octokit = github.getOctokit(token);
         const context = github.context;
 
-        const issue = await octokit.rest.issues.listForRepo({
+        const issue = await octokit.rest.issues.get({
             title: `Release v${version}`,
-            labels: [`release v${version}`],
+            // labels: `release v${version}`,
+            state: 'open'
         });
 
         console.log(issue);
