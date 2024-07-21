@@ -24,6 +24,7 @@ jobs:
           username: ${{ secrets.YC_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }} 
           script: |
+            echo "${{ secrets.AUTH_REGISTRY_TOKEN }}" | docker login cr.yandex --username oauth --password-stdin
             docker pull cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
             docker stop app || true
             docker rm app || true 
