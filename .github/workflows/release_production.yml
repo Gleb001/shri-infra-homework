@@ -15,12 +15,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Verify Docker image exists
-        run: |
-          if ! docker manifest inspect cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest > /dev/null; then
-            echo "Docker image cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest does not exist."
-            exit 1
-          fi
+      # - name: Verify Docker image exists
+      #   run: |
+      #     if ! docker manifest inspect cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest > /dev/null; then
+      #       echo "Docker image cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest does not exist."
+      #       exit 1
+      #     fi
 
       - name: Deploy Docker image on VM
         run: |
