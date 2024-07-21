@@ -30,6 +30,11 @@ jobs:
         docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ github.run_number }}
         docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
 
+    - name: Configure Git
+      run: |
+        git config user.name "${{ github.actor }}"
+        git config user.email "default@gmail.com"
+
     - name: создаёт тег с номером текущего релиза + пометкой `fix` и номером фикса
       run: |
         git tag -a "${{ inputs.version }}_fix${{ github.run_number }}" -m "Fix release for version ${{ inputs.version }}"
