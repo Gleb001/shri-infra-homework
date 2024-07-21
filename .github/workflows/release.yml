@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    branches:
+      - main
+
+jobs:
+
+  lint_and_test:
+    uses: ./.github/workflows/lint_and_test.yml
+
+  release:
+    runs-on: ubuntu-latest
+    needs: lint_and_test
+    if: ${{ needs.lint_and_test.result == 'success' }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Отводит от `main` релизуню ветку `releases/<версия_релиза>`
+      run: |
+        git config user.name "${{ github.actor }}"
+    # git config user.email "actions@github.com"
+        git checkout main
+        git pull origin main
+        git checkout -b "releases/${{ github.run_number }}"
+        git push origin "releases/${{ github.run_number }}"
+
+    # - name: Создать Docker образ
+    #   run: |
+    #     docker build -t cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }} .
+    #     docker tag cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }} cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }}_latest
+
+    # - name: Запушить Docker образ
+    #   run: |
+    #     docker push cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }}
+    #     docker push cr.yandex/<идентификатор_реестра>/app:${{ github.run_number }}_latest
+
+    # - name: Создаёт тег, с номером текущей версии, который указывает на последний коммит в главной ветке 
+    #   run: |
+    #     git tag -a "v${{ github.run_number }}" -m "Release version ${{ github.run_number }}"
+    #     git push origin "v${{ github.run_number }}"
+
+    
