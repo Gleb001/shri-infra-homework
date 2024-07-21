@@ -18,8 +18,7 @@ async function run() {
         const context = github.context;
 
         const issue = await octokit.rest.issues.get({
-            title: `Release v${version}`,
-            // labels: `release v${version}`,
+            // title: `Release v${version}`,
             state: 'open'
         });
 
