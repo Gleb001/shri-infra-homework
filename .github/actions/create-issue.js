@@ -14,6 +14,8 @@ async function run() {
         const octokit = github.getOctokit(token);
         const context = github.context;
 
+        console.log(octokit);
+
         // await octokit.issues.create({
         //     owner: context.repo.owner,
         //     repo: context.repo.repo,
@@ -33,7 +35,7 @@ async function run() {
         //     cr.yandex/${id_registry}/app:${version}
         //     `,
         // });
-        await octokit.issues.create({
+        await octokit.rest.issues.create({
             ...context.repo,
             labels: [`release v${version}`],
             title: `Release v${version}`,

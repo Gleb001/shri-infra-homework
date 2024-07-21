@@ -69,13 +69,21 @@ jobs:
     - name: Подкачиваем npm-зависимости
       run: npm ci
 
-    - name: создание Issue, которое содержит всю важную информацию
-      run: node .github/actions/create-issue.js
-      env:
-        token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
-        date: ${{ env.date }}
-        author: ${{ github.actor }}
-        version: ${{ github.run_number }}
-        commits: ${{ env.commits }}
-        id_registry: ${{ secrets.ID_REGISTRY }}
+    # PS: update!
+    # - name: создание Issue, которое содержит всю важную информацию
+    #   run: node .github/actions/create-issue.js
+    #   env:
+    #     token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+    #     date: ${{ env.date }}
+    #     author: ${{ github.actor }}
+    #     version: ${{ github.run_number }}
+    #     commits: ${{ env.commits }}
+    #     id_registry: ${{ secrets.ID_REGISTRY }}
+
+    - name: Update CHANGELOG.md
+      run: |
+        echo -e "# v${{ github.run_number }}\n\n${{ env.commits }}\n$(cat CHANGELOG.md)" > CHANGELOG.md
+        git add CHANGELOG.md
+        git commit -m "Update CHANGELOG for version ${{ github.run_number }}"
+        git push origin "releases/${{ github.run_number }}"
         
