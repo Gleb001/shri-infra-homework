@@ -13,31 +13,6 @@ on:
 jobs:
   lint_and_test:
     uses: .github/workflows/lint_and_test.yml
-name: Check PR
-
-on:
-  pull_request:
-    branches:
-      - main
-    types:
-      - opened       # создание новогоа pull request
-      - reopened     # повторное открытие ранее закрытого pull request
-      - synchronize  # изменение pull request
-      - closed       # закрытие pull request (как слияние, так и без слияния)
-
-jobs: 
-  lint_and_test:
-    uses: .github/workflows/lint_and_test.yml
-
-  merge:
-    runs-on: ubuntu-latest
-    needs: lint_and_test
-    if: ${{ needs.lint_and_test.result == 'success' }}
-
-    steps:
-    - name: Мердж изменений
-      run: echo "Проверки для pull request прошли успешно, вы можете замержить"
-
 
   merge:
     runs-on: ubuntu-latest
