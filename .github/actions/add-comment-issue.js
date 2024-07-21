@@ -15,19 +15,16 @@ async function run() {
         const octokit = github.getOctokit(token);
         const context = github.context;
 
-        console.log(octokit.rest.issues);
-
         // Поиск Issue по метке и заголовку
         const { data: issues } = await octokit.request(
             'GET /repos/{owner}/{repo}/issues',
             {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `Release v${version}`,
             }
         );
 
-        console.log(issues);
+        const issue = issues.find((item) => item.title === `Release v${version}`)
 
         if (!issue) {
             throw new Error(`Issue for release version ${version} not found`);
