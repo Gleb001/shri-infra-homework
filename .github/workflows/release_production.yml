@@ -15,16 +15,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # - name: Verify Docker image exists
-      #   run: |
-      #     if ! docker manifest inspect cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest > /dev/null; then
-      #       echo "Docker image cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest does not exist."
-      #       exit 1
-      #     fi
+      - name: аутентификация в Yandex Registry
+        run: echo "${{ secrets.AUTH_REGISTRY_TOKEN }}" | docker login cr.yandex --username oauth --password-stdin
 
       - name: Deploy Docker image on VM
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | ssh -o "StrictHostKeyChecking=no" -i /dev/stdin ${{ secrets.YC_USERNAME }}@${{ secrets.PUBLIC_IP_VM }}
           docker pull cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
           docker run -d --name app -p 3000:3000 cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
           EOF
