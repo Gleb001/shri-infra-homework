@@ -12,10 +12,9 @@ on:
 
 jobs:
   lint_and_test:
-    steps:
-      uses: ./.github/workflows/reusable/lint_and_test.yml
-      with:
-        node-version: '20.x'
+    uses: ./.github/workflows/reusable/lint_and_test.yml
+    with:
+      node-version: '20.x'
 
   merge:
     runs-on: ubuntu-latest
