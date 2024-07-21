@@ -62,7 +62,7 @@ jobs:
       run: echo "commits=$(git log ${{ steps.get_latest_tag.outputs.tag }}..HEAD --oneline)" >> $GITHUB_ENV
 
     - name: создание Issue, которое содержит всю важную информацию
-      uses: ./.github/actions/create-issue.js
+      run: node .github/actions/create-issue.js
       with:
         token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
         date: ${{ env.date }}
