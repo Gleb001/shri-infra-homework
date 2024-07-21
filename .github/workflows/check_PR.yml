@@ -14,10 +14,6 @@ jobs:
   lint_and_test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-
     steps:
       uses: ./github/workflows/helpers/lint_and_test.yml
       with:
