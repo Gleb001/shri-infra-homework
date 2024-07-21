@@ -24,7 +24,7 @@ jobs:
 
       - name: Deploy Docker image on VM
         run: |
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ${{ secrets.YC_USERNAME }}@${{ secrets.PUBLIC_IP_VM }} << 'EOF'
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | ssh -o "StrictHostKeyChecking=no" -i /dev/stdin ${{ secrets.YC_USERNAME }}@${{ secrets.PUBLIC_IP_VM }}
           docker pull cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
           docker run -d --name app -p 3000:3000 cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
           EOF
