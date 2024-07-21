@@ -34,15 +34,15 @@ jobs:
     - name: собирает docker-образ с двумя тегами
       run: |
         docker build -t cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }} .
-        docker tag cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }} cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest
+        docker tag cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}
 
     - name: аутентификация в Yandex Registry
       run: echo "${{ secrets.AUTH_REGISTRY_TOKEN }}" | docker login cr.yandex --username oauth --password-stdin
 
     - name: загружает docker-образ в Container Registry 
       run: |
-        docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}
         docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest
+        docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}
 
     - name: создаёт тег, с номером текущей версии, который указывает на последний коммит в главной ветке
       run: |
