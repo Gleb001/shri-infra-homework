@@ -69,16 +69,15 @@ jobs:
     - name: Подкачиваем npm-зависимости
       run: npm ci
 
-    # PS: update!
-    # - name: создание Issue, которое содержит всю важную информацию
-    #   run: node .github/actions/create-issue.js
-    #   env:
-    #     token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
-    #     date: ${{ env.date }}
-    #     author: ${{ github.actor }}
-    #     version: ${{ github.run_number }}
-    #     commits: ${{ env.commits }}
-    #     id_registry: ${{ secrets.ID_REGISTRY }}
+    - name: создание Issue, которое содержит всю важную информацию
+      run: node .github/actions/create-issue.js
+      env:
+        token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+        date: ${{ env.date }}
+        author: ${{ github.actor }}
+        version: ${{ github.run_number }}
+        commits: ${{ env.commits }}
+        id_registry: ${{ secrets.ID_REGISTRY }}
 
     - name: Update CHANGELOG.md
       run: |
