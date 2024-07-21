@@ -25,7 +25,7 @@ on:
       - synchronize  # изменение pull request
       - closed       # закрытие pull request (как слияние, так и без слияния)
 
-jobs:
+jobs: 
   lint_and_test:
     uses: .github/workflows/lint_and_test.yml
 
