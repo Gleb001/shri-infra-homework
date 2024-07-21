@@ -15,18 +15,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: аутентификация в Yandex Registry
-        run: echo "${{ secrets.AUTH_REGISTRY_TOKEN }}" | docker login cr.yandex --username oauth --password-stdin
-
       - name: Deploy Docker image on VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PUBLIC_IP_VM }}
+          port: 22
+          username: ${{ secrets.YC_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          script: |
+            docker pull cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
+            docker stop app || true
+            docker rm app || true 
+            docker run -d --name app -p 3000:3000 cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
+
+      - name: 
         run: |
           mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{  }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh ${{ secrets.YC_USERNAME }}@${{ secrets.PUBLIC_IP_VM }}
-          docker pull cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
-          docker run -d --name app -p 3000:3000 cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
-
+          
       - name: Configure Git
         run: |
           git config user.name "${{ github.actor }}"
