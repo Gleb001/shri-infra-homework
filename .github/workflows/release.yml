@@ -53,23 +53,22 @@ jobs:
         github-token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
         script: |
           const { runNumber, actor, repo } = context;
-          const { owner } = repo;
-
+    
           await github.issues.create({
-            owner: owner,
-            repo: repo.repo,
+            owner: actor,
+            repo: repo.name,
             title: `Release v${runNumber}`,
-            body: (`
+            body: `
               ### Release Information
               - **Release Version**: v${runNumber}
               - **Release Date**: ${new Date().toISOString().split('T')[0]}
-              - **Released by**: @${autor}
+              - **Released by**: @${actor}
 
               ### Commit List
 
               ### Docker Image
               - cr.yandex/${{ secrets.ID_REGISTRY }}/app:v${runNumber}
-            `),
+            `,
             labels: ['release']
           });
   
