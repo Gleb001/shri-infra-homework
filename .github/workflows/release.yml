@@ -51,5 +51,7 @@ jobs:
         COMMIT_LIST: "123123123123"
       with:
         github-token: ${{ secrets.ACCESS_TOKEN }}
-      run: node createIssue.js
+      runs:
+        using: 'node20'
+        main: 'createIssue.js'
           
