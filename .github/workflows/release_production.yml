@@ -46,4 +46,4 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
           date: ${{ env.date }}
           author: ${{ github.actor }}
-          version: ${{ github.run_number }}
+          version: ${{ inputs.version }}
