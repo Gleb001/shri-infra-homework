@@ -46,12 +46,27 @@ jobs:
 
     - name: создание Issue, которое содержит всю важную информацию
       uses: actions/github-script@v7
-      env:
-        ID_REGISTRY: ${{ secrets.ID_REGISTRY }}
-        COMMIT_LIST: "123123123123"
       with:
-        github-token: ${{ secrets.ACCESS_TOKEN }}
-      runs:
-        using: 'node20'
-        main: 'createIssue.js'
+        github-token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+        script: |
+          const { runNumber, actor, repo } = context;
+          const { owner } = repo;
+
+          await github.issues.create({
+            owner: owner,
+            repo: repo.repo,
+            title: `Release v${runNumber}`,
+            body: (`
+              ### Release Information
+              - **Release Version**: v${runNumber}
+              - **Release Date**: ${new Date().toISOString().split('T')[0]}
+              - **Released by**: @${autor}
+
+              ### Commit List
+
+              ### Docker Image
+              - cr.yandex/${{ secrets.ID_REGISTRY }}/app:v${runNumber}
+            `),
+            labels: ['release']
+          });
   
