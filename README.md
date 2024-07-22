@@ -1,3 +1,7 @@
+
+# Публичный IPv4-адрес виртуальной машины: 51.250.34.158
+# Ссылка на сайт, который 'крутится' на виртуальной машине: http://51.250.34.158:3000/hw/store/
+
 # Домашнее задание ШРИ: Инфраструктура
 
 Вам уже знакомо это приложение, вы работали с ним во время выполнения [домашнего задания по автотестам](https://github.com/dima117/testing-homework).
@@ -93,7 +97,14 @@ https://yandex.cloud/ru/docs/compute/quickstart/quick-create-linux#create-vm
         - дату фикса,
         - автора фикса (тот, кто запустил флоу),
         - список коммитов от предыдущего релизного (или фиксрелизного) тега
-        - ссылку на docker-образом в Yandex Container Registry\
+        - ссылку на doname: 'Git-авторизация'
+
+runs:
+  steps:
+    - name: Git-авторизация
+      run: |
+        git config user.name "${{ github.actor }}"
+        git config user.email "empty@gmail.com"cker-образом в Yandex Container Registry\
           `cr.yandex/<идентификатор_реестра>/app:<версия_релиза>_fix<номер_запуска_фиксрелизного_флоу>`
 
 4. Флоу выкатки релиза в прод

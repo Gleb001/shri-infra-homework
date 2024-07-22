@@ -1,23 +1,27 @@
-name: Check PR
+name: Проверка работы Pull Request
 
 on:
   pull_request:
     branches:
       - main
+      - release/**
     types:
-      - opened       # создание новогоа pull request
-      - reopened     # повторное открытие ранее закрытого pull request
-      - synchronize  # изменение pull request
-      - closed       # закрытие pull request (как слияние, так и без слияния)
+      - opened     
+      - reopened     
+      - synchronize  
+      - closed      
 
 jobs:
+  setup:
+    uses: ./.github/actions/yml/setup.yml
+
   lint_and_test:
-    uses: ./.github/workflows/lint_and_test.yml
+    need: setup
+    uses: ./.github/actions/yml/lint_and_test.yml
 
   merge:
     runs-on: ubuntu-latest
     needs: lint_and_test
-    if: ${{ needs.lint_and_test.result == 'success' }}
 
     steps:
     - name: Мердж изменений

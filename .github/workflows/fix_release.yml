@@ -1,8 +1,9 @@
-name: Fix Release
-
+name: Доработка релиза
 
 on:
   workflow_dispatch:
+    branches:
+      - release/**
     inputs:
       version:
         description: 'Release version'
@@ -10,43 +11,45 @@ on:
         default: '37'
 
 jobs:
+  setup:
+    uses: ./.github/actions/yml/setup.yml
+
   lint_and_test:
-    uses: ./.github/workflows/lint_and_test.yml
+    needs: setup
+    uses: ./.github/actions/yml/lint_and_test.yml
 
-  release:
+  upload_docker_image_to_registry:
     runs-on: ubuntu-latest
-    needs: lint_and_test
-    if: ${{ needs.lint_and_test.result == 'success' }}
-
+    needs: create_release_branch
     steps:
-
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: собирает docker-образ с двумя тегами
+    - name: Собираем Docker-образ с двумя тегами ( [release_version]_fix[fix_version] )
       id: build
       run: |
         docker build -t cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ github.run_number }} .
         docker tag cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ github.run_number }} cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
 
-    - name: аутентификация в Yandex Registry
+    - name: Аутентификация в Yandex Registry
       run: echo "${{ secrets.AUTH_REGISTRY_TOKEN }}" | docker login cr.yandex --username oauth --password-stdin
     
-    - name: загружает docker-образ в Container Registry
+    - name: Переносим Docker-образ в Container Registry
       run: |
         docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ github.run_number }}
         docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
 
-    - name: Configure Git
-      run: |
-        git config user.name "${{ github.actor }}"
-        git config user.email "default@gmail.com"
+  add_tag_for_fix:
+    runs-on: ubuntu-latest
+    needs: lint_and_test
+    steps:
+      uses: ./.github/actions/yml/auth_git.yml
 
     - name: создаёт тег с номером текущего релиза + пометкой `fix` и номером фикса
       run: |
         git tag -a "${{ inputs.version }}_fix${{ github.run_number }}" -m "Fix release for version ${{ inputs.version }}"
         git push origin "${{ inputs.version }}_fix${{ github.run_number }}"
 
+  get_data_for_comment_issue:
+    runs-on: ubuntu-latest
+    needs: upload_docker_image_to_registry
     - name: Get the previous tag
       id: get_previous_tag
       run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
@@ -61,15 +64,11 @@ jobs:
     - name: получить текущую дату
       id: date
       run: echo "date=$(date -u)" >> $GITHUB_ENV
-    
-    - name: Устанавливаем Node.js 20.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
 
-    - name: Подкачиваем npm-зависимости
-      run: npm ci
-
+  add_comment_release_issue:
+    runs-on: ubuntu-latest
+    needs: get_data_for_comment_issue
+    steps:
     - name: добавляет комментарий в Issue
       run: node .github/actions/add-comment-issue.js
       env:

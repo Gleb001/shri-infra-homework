@@ -2,21 +2,22 @@ name: Deploy Release to Production
 
 on:
   workflow_dispatch:
+    branches:
+      - release/**
     inputs:
       version:
         description: 'Release version'
         required: true
 
 jobs:
-  deploy-to-prod:
+  setup:
+    uses: ./.github/actions/yml/setup.yml
+  
+  deploy_production:
     runs-on: ubuntu-latest
-
+    needs: setup
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-
-      - name: Deploy Docker image on VM
+      - name: Подключение к виртуальной машине и загрузка (на неё) Docker-образа из Yandex Registry
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.PUBLIC_IP_VM }}
@@ -30,27 +31,18 @@ jobs:
             docker rm app || true 
             docker run -d --name app -p 3000:3000 cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
 
-      - name: Configure Git
-        run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "default@gmail.com"
+  add_comment_release_issue:
+    runs-on: ubuntu-latest
+    needs: deploy_production
+    steps:
+    - name: получить текущую дату
+      id: date
+      run: echo "date=$(date -u)" >> $GITHUB_ENV
 
-      - name: получить текущую дату
-        id: date
-        run: echo "date=$(date -u)" >> $GITHUB_ENV
-
-      - name: Устанавливаем Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-
-      - name: Подкачиваем npm-зависимости
-        run: npm ci
-
-      - name: Add comment to issue
-        run: node .github/actions/prod-release-comment.js
-        env:
-          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
-          date: ${{ env.date }}
-          author: ${{ github.actor }}
-          version: ${{ inputs.version }}
+    - name: Add comment to issue
+      run: node .github/actions/prod-release-comment.js
+      env:
+        token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+        date: ${{ env.date }}
+        author: ${{ github.actor }}
+        version: ${{ inputs.version }}
