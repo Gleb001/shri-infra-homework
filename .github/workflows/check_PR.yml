@@ -23,6 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint_and_test
     steps:
-    - name: Мердж изменений
-      run: echo "Проверки для pull request прошли успешно, вы можете замержить"
+      - name: Мердж изменений
+        run: echo "Проверки для pull request прошли успешно, вы можете замержить"
 

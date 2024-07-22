@@ -17,74 +17,74 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint_and_test
     steps:
-    - name: Собираем Docker-образ с двумя тегами ( [release_version], [release_version]_latest )
-      run: |
-        docker build -t cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest .
-        docker tag cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}
+      - name: Собираем Docker-образ с двумя тегами ( [release_version], [release_version]_latest )
+        run: |
+          docker build -t cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest .
+          docker tag cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}
 
-    - name: Аутентификация в Yandex Registry
-      run: echo "${{ secrets.AUTH_REGISTRY_TOKEN }}" | docker login cr.yandex --username oauth --password-stdin
+      - name: Аутентификация в Yandex Registry
+        run: echo "${{ secrets.AUTH_REGISTRY_TOKEN }}" | docker login cr.yandex --username oauth --password-stdin
 
-    - name: Переносим Docker-образ в Container Registry 
-      run: |
-        docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest
-        docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}
+      - name: Переносим Docker-образ в Container Registry 
+        run: |
+          docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest
+          docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}
 
   create_release_branch:
     runs-on: ubuntu-latest
     needs: upload_docker_image_to_registry
     steps:
-      uses: ./.github/workflows/auth_git.yml
+        uses: ./.github/workflows/auth_git.yml
 
-    - name: Отводим от `main` релизуню ветку `releases/${{ github.run_number }}`
-      run: |
-        git checkout main
-        git pull origin main
-        git checkout -b "releases/${{ github.run_number }}"
-        git push origin "releases/${{ github.run_number }}"
+      - name: Отводим от `main` релизуню ветку `releases/${{ github.run_number }}`
+        run: |
+          git checkout main
+          git pull origin main
+          git checkout -b "releases/${{ github.run_number }}"
+          git push origin "releases/${{ github.run_number }}"
 
-    - name: создаёт тег, с номером текущей версии, который указывает на последний коммит в главной ветке
-      run: |
-        git tag -a "v${{ github.run_number }}" -m "Release version ${{ github.run_number }}"
-        git push origin "v${{ github.run_number }}"
+      - name: создаёт тег, с номером текущей версии, который указывает на последний коммит в главной ветке
+        run: |
+          git tag -a "v${{ github.run_number }}" -m "Release version ${{ github.run_number }}"
+          git push origin "v${{ github.run_number }}"
 
 
   get_data_for_create_issue:
     runs-on: ubuntu-latest
     needs: create_release_branch
     steps:
-    - name: получить текущую дату
-      id: date
-      run: echo "date=$(date -u)" >> $GITHUB_ENV
+      - name: получить текущую дату
+        id: date
+        run: echo "date=$(date -u)" >> $GITHUB_ENV
 
-    - name: получить тег предыдущего релиза
-      id: get_latest_tag
-      run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+      - name: получить тег предыдущего релиза
+        id: get_latest_tag
+        run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
 
-    - name: получить список коммитов от предыдущего релизного
-      id: commits
-      run: echo "commits=$(git log ${{ steps.get_latest_tag.outputs.tag }}..HEAD --oneline)" >> $GITHUB_ENV
+      - name: получить список коммитов от предыдущего релизного
+        id: commits
+        run: echo "commits=$(git log ${{ steps.get_latest_tag.outputs.tag }}..HEAD --oneline)" >> $GITHUB_ENV
 
   create_issue:
     runs-on: ubuntu-latest
     needs: get_data_for_create_issue
     steps:
-    - name: Создание Issue для нового релиза
-      run: node .github/actions/create-issue.js
-      env:
-        token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
-        date: ${{ env.date }}
-        author: ${{ github.actor }}
-        version: ${{ github.run_number }}
-        commits: ${{ env.commits }}
-        id_registry: ${{ secrets.ID_REGISTRY }}
+      - name: Создание Issue для нового релиза
+        run: node .github/actions/create-issue.js
+        env:
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+          date: ${{ env.date }}
+          author: ${{ github.actor }}
+          version: ${{ github.run_number }}
+          commits: ${{ env.commits }}
+          id_registry: ${{ secrets.ID_REGISTRY }}
 
   update_changelog:
     runs-on: ubuntu-latest
-    needs: get_data_launch_workflow
-    - name: Обновление CHANGELOG.md
-      run: |
-        echo -e "# v${{ github.run_number }}\n\n${{ env.commits }}\n$(cat CHANGELOG.md)" > CHANGELOG.md
-        git add CHANGELOG.md
-        git commit -m "Update CHANGELOG for version ${{ github.run_number }}"
-        git push origin "releases/${{ github.run_number }}"
+    needs: create_issue
+      - name: Обновление CHANGELOG.md
+        run: |
+          echo -e "# v${{ github.run_number }}\n\n${{ env.commits }}\n$(cat CHANGELOG.md)" > CHANGELOG.md
+          git add CHANGELOG.md
+          git commit -m "Update CHANGELOG for version ${{ github.run_number }}"
+          git push origin "releases/${{ github.run_number }}"

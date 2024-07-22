@@ -20,62 +20,62 @@ jobs:
 
   upload_docker_image_to_registry:
     runs-on: ubuntu-latest
-    needs: create_release_branch
+    needs: lint_and_test
     steps:
-    - name: Собираем Docker-образ с двумя тегами ( [release_version]_fix[fix_version] )
-      id: build
-      run: |
-        docker build -t cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ github.run_number }} .
-        docker tag cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ github.run_number }} cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
-
-    - name: Аутентификация в Yandex Registry
-      run: echo "${{ secrets.AUTH_REGISTRY_TOKEN }}" | docker login cr.yandex --username oauth --password-stdin
-    
-    - name: Переносим Docker-образ в Container Registry
-      run: |
-        docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ github.run_number }}
-        docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
+      - name: Собираем Docker-образ с двумя тегами ( [release_version]_fix[fix_version] )
+        id: build
+        run: |
+          docker build -t cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ github.run_number }} .
+          docker tag cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ github.run_number }} cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
+  
+      - name: Аутентификация в Yandex Registry
+        run: echo "${{ secrets.AUTH_REGISTRY_TOKEN }}" | docker login cr.yandex --username oauth --password-stdin
+      
+      - name: Переносим Docker-образ в Container Registry
+        run: |
+          docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ github.run_number }}
+          docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
 
   add_tag_for_fix:
     runs-on: ubuntu-latest
-    needs: lint_and_test
+    needs: upload_docker_image_to_registry
     steps:
-      uses: ./.github/workflows/auth_git.yml
+        uses: ./.github/workflows/auth_git.yml
 
-    - name: создаёт тег с номером текущего релиза + пометкой `fix` и номером фикса
-      run: |
-        git tag -a "${{ inputs.version }}_fix${{ github.run_number }}" -m "Fix release for version ${{ inputs.version }}"
-        git push origin "${{ inputs.version }}_fix${{ github.run_number }}"
+      - name: создаёт тег с номером текущего релиза + пометкой `fix` и номером фикса
+        run: |
+          git tag -a "${{ inputs.version }}_fix${{ github.run_number }}" -m "Fix release for version ${{ inputs.version }}"
+          git push origin "${{ inputs.version }}_fix${{ github.run_number }}"
 
   get_data_for_comment_issue:
     runs-on: ubuntu-latest
-    needs: upload_docker_image_to_registry
-    - name: Get the previous tag
-      id: get_previous_tag
-      run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+    needs: add_tag_for_fix
+      - name: Get the previous tag
+        id: get_previous_tag
+        run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
 
-    - name: Получить список пред. коммитов
-      id: commits
-      run: |
-        PREVIOUS_TAG=${{ steps.get_previous_tag.outputs.tag }}
-        COMMITS=$(git log $PREVIOUS_TAG..HEAD --oneline)
-        echo "commits=$COMMITS" >> $GITHUB_ENV
+      - name: Получить список пред. коммитов
+        id: commits
+        run: |
+          PREVIOUS_TAG=${{ steps.get_previous_tag.outputs.tag }}
+          COMMITS=$(git log $PREVIOUS_TAG..HEAD --oneline)
+          echo "commits=$COMMITS" >> $GITHUB_ENV
 
-    - name: получить текущую дату
-      id: date
-      run: echo "date=$(date -u)" >> $GITHUB_ENV
+      - name: получить текущую дату
+        id: date
+        run: echo "date=$(date -u)" >> $GITHUB_ENV
 
   add_comment_release_issue:
     runs-on: ubuntu-latest
     needs: get_data_for_comment_issue
     steps:
-    - name: добавляет комментарий в Issue
-      run: node .github/actions/add-comment-issue.js
-      env:
-        token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
-        date: ${{ env.date }}
-        author: ${{ github.actor }}
-        version: ${{ inputs.version }}
-        commits: ${{ env.commits }}
-        fix_number: ${{ github.run_number }}
-        id_registry: ${{ secrets.ID_REGISTRY }}
+      - name: добавляет комментарий в Issue
+        run: node .github/actions/add-comment-issue.js
+        env:
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+          date: ${{ env.date }}
+          author: ${{ github.actor }}
+          version: ${{ inputs.version }}
+          commits: ${{ env.commits }}
+          fix_number: ${{ github.run_number }}
+          id_registry: ${{ secrets.ID_REGISTRY }}

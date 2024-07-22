@@ -6,8 +6,8 @@ jobs:
   lint_and_test:
     runs-on: ubuntu-latest
     steps:
-    - name: Запускаем линтер (eslint)
-      run: npm run lint
-
-    - name: Запускаем тесты (jest)
-      run: npm run test
+      - name: Запускаем линтер (eslint)
+        run: npm run lint
+  
+      - name: Запускаем тесты (jest)
+        run: npm run test
