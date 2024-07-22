@@ -1,4 +1,4 @@
-name: Доработка релиза
+name: "Доработка релиза"
 
 on:
   workflow_dispatch:

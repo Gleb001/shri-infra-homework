@@ -1,4 +1,4 @@
-name: Deploy Release to Production
+name: "Deploy Release to Production"
 
 on:
   workflow_dispatch:
