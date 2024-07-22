@@ -13,11 +13,11 @@ on:
 
 jobs:
   setup:
-    uses: ./.github/workflow/helpers/setup.yml
+    uses: ./.github/workflows/helpers/setup.yml
 
   lint_and_test:
     needs: setup
-    uses: ./.github/workflow/helpers/lint_and_test.yml
+    uses: ./.github/workflows/helpers/lint_and_test.yml
 
   merge:
     runs-on: ubuntu-latest
