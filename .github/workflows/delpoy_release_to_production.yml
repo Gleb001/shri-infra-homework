@@ -11,7 +11,7 @@ on:
 
 jobs:
   setup:
-    uses: ./.github/workflows/helpers/setup.yml
+    uses: ./.github/workflows/setup.yml
   
   deploy_production:
     runs-on: ubuntu-latest
