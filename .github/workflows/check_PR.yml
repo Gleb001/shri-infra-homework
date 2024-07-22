@@ -16,13 +16,12 @@ jobs:
     uses: ./.github/actions/yml/setup.yml
 
   lint_and_test:
-    need: setup
+    needs: setup
     uses: ./.github/actions/yml/lint_and_test.yml
 
   merge:
     runs-on: ubuntu-latest
     needs: lint_and_test
-
     steps:
     - name: Мердж изменений
       run: echo "Проверки для pull request прошли успешно, вы можете замержить"
