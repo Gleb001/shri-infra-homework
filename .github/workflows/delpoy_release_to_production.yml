@@ -1,9 +1,9 @@
-name: "Deploy Release to Production"
+name: Deploy release to production
 
 on:
   workflow_dispatch:
     branches:
-      - release/**
+      - 'release/**'
     inputs:
       version:
         description: 'Release version'

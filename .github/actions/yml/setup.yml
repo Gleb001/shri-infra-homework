@@ -1,12 +1,7 @@
-name: 'Подготовка окружения Node.js'
-
-# inputs:
-#   node-version:
-#     description: 'Node.js version'
-#     required: false
-#     default: '20.x'
+name: Setup environment Node.js
 
 runs:
+  using: "composite"
   steps:
     - name: Подгружаем код репозитория
       uses: actions/checkout@v4

@@ -1,11 +1,10 @@
-name: Запуск lint (eslint) и тестов (jest)
+name: Launch lint (eslint) and tests (jest)
 
 on: [workflow_call]
 
 jobs:
   lint_and_test:
     runs-on: ubuntu-latest
-
     steps:
     - name: Запускаем линтер (eslint)
       run: npm run lint

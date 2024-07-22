@@ -1,8 +1,9 @@
-name: 'Git-авторизация'
+name: Set git-user
 
 runs:
+  using: "composite"
   steps:
     - name: Git-авторизация
       run: |
         git config user.name "${{ github.actor }}"
-      # git config user.email "empty@gmail.com"
+        git config user.email "empty@gmail.com"

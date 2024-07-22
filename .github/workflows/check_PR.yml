@@ -1,10 +1,10 @@
-name: "Проверка работы Pull Request"
+name: Check Pull Requests (PR)
 
 on:
   pull_request:
     branches:
       - main
-      - release/**
+      - 'release/**'
     types:
       - opened     
       - reopened     

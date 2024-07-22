@@ -1,9 +1,9 @@
-name: "Доработка релиза"
+name: Fix release
 
 on:
   workflow_dispatch:
     branches:
-      - release/**
+      - 'release/**'
     inputs:
       version:
         description: 'Release version'
