@@ -12,11 +12,7 @@ on:
       - closed      
 
 jobs:
-  setup:
-    uses: ./.github/workflows/setup.yml
-
   lint_and_test:
-    needs: setup
     uses: ./.github/workflows/lint_and_test.yml
 
   merge:

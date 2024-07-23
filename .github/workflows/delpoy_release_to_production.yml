@@ -10,12 +10,8 @@ on:
         required: true
 
 jobs:
-  setup:
-    uses: ./.github/workflows/setup.yml
-  
   deploy_production:
     runs-on: ubuntu-latest
-    needs: setup
     steps:
       - name: Подключение к виртуальной машине и загрузка (на неё) Docker-образа из Yandex Registry
         uses: appleboy/ssh-action@v1.0.3
