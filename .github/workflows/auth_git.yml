@@ -6,6 +6,9 @@ jobs:
   lint_and_test:
     runs-on: ubuntu-latest
     steps:
+      - name: Подгружаем код репозитория
+        uses: actions/checkout@v4
+
       - name: Git-авторизация
         run: |
           git config user.name "${{ github.actor }}"

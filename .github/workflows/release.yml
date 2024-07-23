@@ -37,6 +37,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: set_git_user
     steps:
+      - name: Подгружаем код репозитория
+        uses: actions/checkout@v4
+
       - name: Отводим от `main` релизуню ветку `releases/${{ github.run_number }}`
         run: |
           git checkout main
@@ -51,8 +54,11 @@ jobs:
 
   get_data_for_create_issue:
     runs-on: ubuntu-latest
-    needs: upload_docker_image_to_registry
+    needs: create_release_branch
     steps:
+      - name: Подгружаем код репозитория
+        uses: actions/checkout@v4
+
       - name: получить текущую дату
         id: date
         run: echo "date=$(date -u)" >> $GITHUB_ENV
@@ -89,6 +95,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: create_issue
     steps:
+      - name: Подгружаем код репозитория
+        uses: actions/checkout@v4
+
       - name: Обновление CHANGELOG.md
         run: |
           echo -e "# v${{ github.run_number }}\n\n${{ env.commits }}\n$(cat CHANGELOG.md)" > CHANGELOG.md
