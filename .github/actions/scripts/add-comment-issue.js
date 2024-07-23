@@ -15,7 +15,7 @@ async function run() {
             id_registry
         } = process.env;
 
-        const issue = getIssueBy(octokit, { title: `Release v${version}` });
+        const issue = getIssueBy(github, octokit, { title: `Release v${version}` });
         if (issue) {
             await octokit.rest.issues.createComment({
                 ...github.context.repo,

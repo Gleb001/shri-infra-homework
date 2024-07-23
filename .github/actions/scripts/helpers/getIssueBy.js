@@ -1,6 +1,4 @@
-const github = require("@actions/github");
-
-module.exports = async function getIssueBy(octokit, parameters) {
+module.exports = async function getIssueBy(github, octokit, parameters) {
 
     const { owner, repo } = github.context;
     const { data: issues } = await octokit.request(
@@ -9,7 +7,7 @@ module.exports = async function getIssueBy(octokit, parameters) {
     );
 
     return issues.find(issue => {
-        for (let parameter of parameters) {
+        for (let parameter in parameters) {
             if (issue[parameter] !== parameters[parameter]) return false;
         }
         return true;
