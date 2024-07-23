@@ -108,7 +108,7 @@ jobs:
           git fetch origin
           git checkout "releases/${{ github.run_number }}"
 
-      - name: Update CHANGELOG.md
+      - name: Изменить CHANGELOG.md
         run: |
           echo -e "# v${{ github.run_number }}\n\n${{ env.commits }}\n$(cat CHANGELOG.md)" > CHANGELOG.md
           git add CHANGELOG.md

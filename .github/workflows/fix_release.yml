@@ -64,14 +64,14 @@ jobs:
         id: get_previous_tag
         run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
 
-      - name: Получить список пред. коммитов
+      - name: Получить список предыдущих коммитов
         id: commits
         run: |
           PREVIOUS_TAG=${{ steps.get_previous_tag.outputs.tag }}
           COMMITS=$(git log $PREVIOUS_TAG..HEAD --oneline)
           echo "commits=$COMMITS" >> $GITHUB_ENV
 
-      - name: получить текущую дату
+      - name: Получить текущую дату
         id: date
         run: echo "date=$(date -u)" >> $GITHUB_ENV
 
@@ -85,7 +85,7 @@ jobs:
       - name: Подготовка окружения Node.js
         uses: ./.github/actions/setup
 
-      - name: добавляет комментарий в Issue
+      - name: Добавить комментарий к issue релиза
         run: node .github/actions/scripts/add-comment-issue.js
         env:
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}

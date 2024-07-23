@@ -37,11 +37,11 @@ jobs:
       - name: Подготовка окружения Node.js
         uses: ./.github/actions/setup
 
-      - name: получить текущую дату
+      - name: Получить текущую дату
         id: date
         run: echo "date=$(date -u)" >> $GITHUB_ENV
   
-      - name: Add comment to issue
+      - name: Добавить комментарий к issue релиза
         run: node .github/actions/scripts/prod-release-comment.js
         env:
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}

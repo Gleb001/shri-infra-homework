@@ -6,6 +6,8 @@ module.exports = async function getIssueBy(github, octokit, parameters) {
         { owner, repo }
     );
 
+    console.log(issues);
+
     return issues.find(issue => {
         console.log(issue);
         for (let parameter in parameters) {
