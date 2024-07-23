@@ -2,9 +2,10 @@ const github = require("@actions/github");
 
 module.exports = async function getIssueBy(octokit, parameters) {
 
+    const { owner, repo } = github.context;
     const { data: issues } = await octokit.request(
         'GET /repos/{owner}/{repo}/issues',
-        ...github.context.repo
+        { owner, repo }
     );
 
     return issues.find(issue => {
