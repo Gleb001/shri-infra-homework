@@ -5,13 +5,13 @@ const getIssueBy = require("./helpers/getIssueBy");
 async function run() {
     try {
         
-        const octokit = github.getOctokit(token);
         const {
             token,
             date,
             author,
             version
         } = process.env;
+        const octokit = github.getOctokit(token);
 
         const issue = getIssueBy(octokit, { title: `Release v${version}` });
         if (issue) {
