@@ -104,7 +104,9 @@ jobs:
         uses: ./.github/actions/set_user_git
 
       - name: Переключаемся на ветку релиза
-        run: git checkout "releases/${{ github.run_number }}"
+        run: |
+          git fetch origin
+          git checkout "releases/${{ github.run_number }}"
 
       - name: Update CHANGELOG.md
         run: |
