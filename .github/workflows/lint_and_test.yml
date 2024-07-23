@@ -6,11 +6,8 @@ jobs:
   lint_and_test:
     runs-on: ubuntu-latest
     steps:
-      - name: Подгружаем код репозитория
-        uses: actions/checkout@v4
-
       - name: Подготовка окружения Node.js
-        uses: ./.github/workflows/setup.yml@lint_and_test
+        uses: ./.github/workflows/setup.yml
 
       - name: Запускаем линтер (eslint)
         run: npm run lint
