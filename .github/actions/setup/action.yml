@@ -1,14 +1,10 @@
 name: Подготовка окружения Node.js
 
-on: workflow_call
-
-jobs:
-  setup:
+runs:
+  using: 'composite'
+  steps:
     runs-on: ubuntu-latest
     steps:
-      - name: Подгружаем код репозитория
-        uses: actions/checkout@v4
-
       - name: Подгружаем Node.js
         uses: actions/setup-node@v4
         with:
