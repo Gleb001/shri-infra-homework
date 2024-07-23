@@ -82,6 +82,7 @@ jobs:
   update_changelog:
     runs-on: ubuntu-latest
     needs: create_issue
+    steps:
       - name: Обновление CHANGELOG.md
         run: |
           echo -e "# v${{ github.run_number }}\n\n${{ env.commits }}\n$(cat CHANGELOG.md)" > CHANGELOG.md
