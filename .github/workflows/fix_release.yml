@@ -60,7 +60,7 @@ jobs:
       - name: Записываем git-пользователя
         uses: ./.github/actions/set_user_git
 
-      - name: Get the previous tag
+      - name: Получить тег
         id: get_previous_tag
         run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
 
