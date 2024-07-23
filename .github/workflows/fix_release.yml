@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint_and_test
     steps:
+      - name: Подгружаем код репозитория
+        uses: actions/checkout@v4
+        
       - name: Собираем Docker-образ с двумя тегами ( [release_version]_fix[fix_version] )
         id: build
         run: |
@@ -68,8 +71,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: get_data_for_comment_issue
     steps:
+      - name: Подгружаем код репозитория
+        uses: actions/checkout@v4
+
       - name: Подготовка окружения Node.js
-        run: ./.github/workflows/setup.yml
+        uses: ./.github/actions/setup
 
       - name: добавляет комментарий в Issue
         run: node .github/actions/add-comment-issue.js
