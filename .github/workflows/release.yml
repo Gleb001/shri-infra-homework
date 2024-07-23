@@ -6,9 +6,6 @@ on:
       - main
 
 jobs:
-  setup:
-    uses: ./.github/workflows/setup.yml
-
   lint_and_test:
     needs: setup
     uses: ./.github/workflows/lint_and_test.yml
@@ -70,6 +67,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: get_data_for_create_issue
     steps:
+      - name: Подготовка окружения Node.js
+        run: ./.github/workflows/setup.yml
+      
       - name: Создание Issue для нового релиза
         run: node .github/actions/create-issue.js
         env:

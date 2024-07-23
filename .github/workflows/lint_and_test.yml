@@ -6,6 +6,9 @@ jobs:
   lint_and_test:
     runs-on: ubuntu-latest
     steps:
+      - name: Подготовка окружения Node.js
+        run: ./.github/workflows/setup.yml
+
       - name: Запускаем линтер (eslint)
         run: npm run lint
   

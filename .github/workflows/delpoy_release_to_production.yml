@@ -10,9 +10,6 @@ on:
         required: true
 
 jobs:
-  setup:
-    uses: ./.github/workflows/setup.yml
-  
   deploy_production:
     runs-on: ubuntu-latest
     needs: setup
