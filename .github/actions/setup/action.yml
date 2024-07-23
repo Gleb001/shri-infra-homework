@@ -9,4 +9,5 @@ runs:
         node-version: 20.x
 
     - name: Подкачиваем npm-зависимости
+      shell: bash
       run: npm ci
