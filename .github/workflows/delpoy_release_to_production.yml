@@ -1,4 +1,4 @@
-name: Deploy release to production
+name: Отладка release перед production 
 
 on:
   workflow_dispatch:

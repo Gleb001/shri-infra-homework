@@ -1,4 +1,4 @@
-name: Check Pull Requests (PR)
+name: Проверка Pull Requests (PR)
 
 on:
   pull_request:

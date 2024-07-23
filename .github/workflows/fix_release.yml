@@ -1,4 +1,4 @@
-name: Fix release
+name: Обновить release
 
 on:
   workflow_dispatch:
@@ -36,13 +36,14 @@ jobs:
           docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_fix${{ github.run_number }}
           docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ inputs.version }}_latest
 
+  set_git_user:
+    needs: upload_docker_image_to_registry
+    uses: ./.github/workflows/auth_git.yml
+
   add_tag_for_fix:
     runs-on: ubuntu-latest
-    needs: upload_docker_image_to_registry
+    needs: set_git_user
     steps:
-      - name: Set git-user
-        uses: ./.github/workflows/auth_git.yml
-
       - name: создаёт тег с номером текущего релиза + пометкой `fix` и номером фикса
         run: |
           git tag -a "${{ inputs.version }}_fix${{ github.run_number }}" -m "Fix release for version ${{ inputs.version }}"

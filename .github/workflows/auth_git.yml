@@ -1,4 +1,4 @@
-name: Set git-user
+name: Задать git-пользователя
 
 on: [workflow_call]
 

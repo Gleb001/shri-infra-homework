@@ -1,4 +1,4 @@
-name: Setup environment Node.js
+name: Подготовка окружения Node.js
 
 on: [workflow_call]
 

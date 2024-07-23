@@ -30,13 +30,14 @@ jobs:
           docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest
           docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}
 
+  set_git_user:
+    needs: upload_docker_image_to_registry
+    uses: ./.github/workflows/auth_git.yml
+
   create_release_branch:
     runs-on: ubuntu-latest
-    needs: upload_docker_image_to_registry
+    needs: set_git_user
     steps:
-      - name: Set git-user
-        uses: ./.github/workflows/auth_git.yml
-
       - name: Отводим от `main` релизуню ветку `releases/${{ github.run_number }}`
         run: |
           git checkout main

@@ -1,4 +1,4 @@
-name: Launch lint (eslint) and tests (jest)
+name: Анализ кода (eslint) и запуск тестов (jest)
 
 on: [workflow_call]
 
