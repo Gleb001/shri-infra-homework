@@ -18,7 +18,7 @@ async function run() {
         const issue = getIssueBy(octokit, { title: `Release v${version}` });
         if (issue) {
             await octokit.rest.issues.createComment({
-                ...context.repo,
+                ...github.context.repo,
                 issue_number: issue.number,
                 body: (`
                     # Fix Release v${version}_fix${fix_number}

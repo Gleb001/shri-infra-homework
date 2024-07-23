@@ -16,7 +16,7 @@ async function run() {
         const issue = getIssueBy(octokit, { title: `Release v${version}` });
         if (issue) {
             await octokit.rest.issues.createComment({
-                ...github.context,
+                ...github.context.repo,
                 issue_number: issue.number,
                 body: `
                     # Release v${version} Deployed to Prod
