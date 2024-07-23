@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Подгружаем код репозитория
         uses: actions/checkout@v4
-  
+
       - name: Подгружаем Node.js
         uses: actions/setup-node@v4
         with:
