@@ -1,6 +1,6 @@
 name: Подготовка окружения Node.js
 
-on: [workflow_call]
+on: workflow_call
 
 jobs:
   setup:
