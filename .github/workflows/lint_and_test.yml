@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Подготовка окружения Node.js
-        uses: ./.github/workflows/setup.yml
+        uses: ./.github/workflows/setup.yml@v1
 
       - name: Запускаем линтер (eslint)
         run: npm run lint
