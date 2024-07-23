@@ -84,7 +84,7 @@ jobs:
         uses: ./.github/actions/setup
       
       - name: Создание Issue для нового релиза
-        run: node .github/actions/create-issue.js
+        run: node .github/actions/scripts/create-issue.js
         env:
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
           date: ${{ env.date }}

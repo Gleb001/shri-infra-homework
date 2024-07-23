@@ -34,12 +34,15 @@ jobs:
       - name: Подгружаем код репозитория
         uses: actions/checkout@v4
 
+      - name: Подготовка окружения Node.js
+        uses: ./.github/actions/setup
+
       - name: получить текущую дату
         id: date
         run: echo "date=$(date -u)" >> $GITHUB_ENV
   
       - name: Add comment to issue
-        run: node .github/actions/prod-release-comment.js
+        run: node .github/actions/scripts/prod-release-comment.js
         env:
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
           date: ${{ env.date }}

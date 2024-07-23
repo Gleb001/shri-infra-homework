@@ -86,7 +86,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: добавляет комментарий в Issue
-        run: node .github/actions/add-comment-issue.js
+        run: node .github/actions/scripts/add-comment-issue.js
         env:
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
           date: ${{ env.date }}
