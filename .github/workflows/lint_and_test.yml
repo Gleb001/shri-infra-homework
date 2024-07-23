@@ -6,9 +6,9 @@ jobs:
   lint_and_test:
     runs-on: ubuntu-latest
     steps:
-      - name: Подгружаем код репозитория
+      - name: Checkout repository content
         uses: actions/checkout@v4
-      
+
       - name: Подготовка окружения Node.js
         uses: ./.github/workflows/setup.yml
 
