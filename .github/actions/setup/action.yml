@@ -3,7 +3,6 @@ name: Подготовка окружения Node.js
 runs:
   using: 'composite'
   steps:
-    runs-on: ubuntu-latest
     steps:
       - name: Подгружаем Node.js
         uses: actions/setup-node@v4
