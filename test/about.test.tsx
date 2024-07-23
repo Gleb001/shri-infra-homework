@@ -5,7 +5,6 @@ import { About } from '../src/client/pages/About';
 describe('About', () => {
     it('Should render author name', () => {
         const { container } = render(<About />);
-
-        expect(container.textContent).toBe('AboutAuthor: Gleb');
+        expect(container.textContent).toBe('AboutAuthor: I`m not a Gleb!!!');
     });
 });
