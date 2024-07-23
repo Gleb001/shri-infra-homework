@@ -40,6 +40,9 @@ jobs:
       - name: Подгружаем код репозитория
         uses: actions/checkout@v4
 
+      - name: Записываем git-пользователя
+        uses: ./.github/actions/setup
+
       - name: Отводим от `main` релизуню ветку `releases/${{ github.run_number }}`
         run: |
           git checkout main
@@ -97,6 +100,9 @@ jobs:
     steps:
       - name: Подгружаем код репозитория
         uses: actions/checkout@v4
+
+      - name: Записываем git-пользователя
+        uses: ./.github/actions/setup
 
       - name: Обновление CHANGELOG.md
         run: |

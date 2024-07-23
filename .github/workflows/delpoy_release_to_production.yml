@@ -31,6 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy_production
     steps:
+      - name: Подгружаем код репозитория
+        uses: actions/checkout@v4
+
       - name: получить текущую дату
         id: date
         run: echo "date=$(date -u)" >> $GITHUB_ENV
