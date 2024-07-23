@@ -29,19 +29,15 @@ jobs:
           docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}_latest
           docker push cr.yandex/${{ secrets.ID_REGISTRY }}/app:${{ github.run_number }}
 
-  set_git_user:
-    needs: upload_docker_image_to_registry
-    uses: ./.github/workflows/auth_git.yml
-
   create_release_branch:
     runs-on: ubuntu-latest
-    needs: set_git_user
+    needs: upload_docker_image_to_registry
     steps:
       - name: Подгружаем код репозитория
         uses: actions/checkout@v4
 
       - name: Записываем git-пользователя
-        uses: ./.github/actions/setup
+        uses: ./.github/actions/set_user_git
 
       - name: Отводим от `main` релизуню ветку `releases/${{ github.run_number }}`
         run: |
@@ -50,7 +46,7 @@ jobs:
           git checkout -b "releases/${{ github.run_number }}"
           git push origin "releases/${{ github.run_number }}"
 
-      - name: создаёт тег, с номером текущей версии, который указывает на последний коммит в главной ветке
+      - name: Создать тег, с номером текущей версии, который указывает на последний коммит в главной ветке
         run: |
           git tag -a "v${{ github.run_number }}" -m "Release version ${{ github.run_number }}"
           git push origin "v${{ github.run_number }}"
@@ -62,15 +58,18 @@ jobs:
       - name: Подгружаем код репозитория
         uses: actions/checkout@v4
 
-      - name: получить текущую дату
+      - name: Записываем git-пользователя
+        uses: ./.github/actions/set_user_git
+
+      - name: Получить текущую дату
         id: date
         run: echo "date=$(date -u)" >> $GITHUB_ENV
 
-      - name: получить тег предыдущего релиза
+      - name: Получить тег предыдущего релиза
         id: get_latest_tag
         run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
 
-      - name: получить список коммитов от предыдущего релизного
+      - name: Получить список коммитов от предыдущего релизного
         id: commits
         run: echo "commits=$(git log ${{ steps.get_latest_tag.outputs.tag }}..HEAD --oneline)" >> $GITHUB_ENV
 
@@ -102,7 +101,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Записываем git-пользователя
-        uses: ./.github/actions/setup
+        uses: ./.github/actions/set_user_git
 
       - name: Обновление CHANGELOG.md
         run: |
