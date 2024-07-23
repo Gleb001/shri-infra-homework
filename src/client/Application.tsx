@@ -28,6 +28,7 @@ export const Application: FC = () => {
 
     return (
         <div className={bem()}>
+            Text for check task!!!
             <Helmet titleTemplate='%s — Kogtetochka store' />
             <nav className='navbar navbar-expand-sm navbar-light bg-light'>
                 <div className='container'>
