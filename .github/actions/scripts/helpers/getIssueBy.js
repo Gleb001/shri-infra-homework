@@ -7,7 +7,9 @@ module.exports = async function getIssueBy(github, octokit, parameters) {
     );
 
     return issues.find(issue => {
+        console.log(issue);
         for (let parameter in parameters) {
+            console.log(parameter);
             if (issue[parameter] !== parameters[parameter]) return false;
         }
         return true;
